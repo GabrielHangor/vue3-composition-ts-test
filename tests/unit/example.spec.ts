@@ -8,7 +8,10 @@ jest.mock('axios', () => ({
 }));
 
 const mountTimeline = () => {
-  const store = new Store({ posts: { ids: [], all: new Map(), loaded: false } });
+  const store = new Store({
+    authors: { all: new Map(), ids: [], loaded: false, currentUserId: '' },
+    posts: { all: new Map(), ids: [], loaded: false },
+  });
   const testComponent = {
     components: { Timeline },
     template: `

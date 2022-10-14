@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" :style="style">
+  <div v-show="modal.show.value" class="modal">
     <div @click="modal.hideModal" class="modal-background"></div>
     <div class="modal-content">
       <div id="modal"></div>
@@ -16,17 +16,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import NavBar from './components/NavBar.vue';
 import { useModal } from './useModal';
 
 const modal = useModal();
-
-const style = computed(() => {
-  return {
-    display: modal.show.value ? 'block' : 'none',
-  };
-});
 </script>
 
 <style>
@@ -59,5 +52,9 @@ pre {
 
 p {
   margin: 10px 0 !important;
+}
+
+.modal {
+  display: block;
 }
 </style>

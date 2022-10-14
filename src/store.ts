@@ -3,20 +3,29 @@ import { Post } from './mocks';
 import axios from 'axios';
 import moment from 'moment';
 
+interface BaseState<T> {
+  ids: string[];
+  all: Map<string, T>;
+  loaded: boolean;
+}
+
 export interface User {
   id: string;
   username: string;
   password: string;
 }
 
-interface State {
-  posts: PostsState;
+export type Author = Omit<User, 'password'>;
+
+type PostsState = BaseState<Post>;
+
+interface AuthorsState extends BaseState<Author> {
+  currentUserId: string | undefined;
 }
 
-interface PostsState {
-  ids: string[];
-  all: Map<string, Post>;
-  loaded: boolean;
+interface State {
+  authors: AuthorsState;
+  posts: PostsState;
 }
 
 export const storeKey = Symbol('store');
@@ -63,16 +72,17 @@ export class Store {
   }
 
   async createUser(user: User) {
-    console.log(user);
+    const response = await axios.post<Author>('/users', user);
+    this.state.authors.all.set(response.data.id, response.data);
+    this.state.authors.ids.push(response.data.id);
+    this.state.authors.currentUserId = response.data.id;
+    console.log(response);
   }
 }
 
 export const store = new Store({
-  posts: {
-    all: new Map(),
-    ids: [],
-    loaded: false,
-  },
+  authors: { all: new Map(), ids: [], loaded: false, currentUserId: '' },
+  posts: { all: new Map(), ids: [], loaded: false },
 });
 
 export function useStore(): Store {
