@@ -1,7 +1,6 @@
 import { App, inject, reactive, readonly } from 'vue';
 import { Post } from './mocks';
 import axios from 'axios';
-import moment from 'moment';
 
 interface BaseState<T> {
   ids: string[];
@@ -66,8 +65,8 @@ export class Store {
 
   async createPost(newPost: Post) {
     const response = await axios.post<Post>('/posts', newPost);
-    this.state.posts.all.set(newPost.id, response.data);
-    this.state.posts.ids.push(newPost.id);
+    this.state.posts.all.set(response.data.id, response.data);
+    this.state.posts.ids.push(response.data.id);
     console.log(response);
   }
 

@@ -4,8 +4,8 @@ import { routerWithStore } from './router';
 import 'highlight.js/styles/atom-one-dark.css';
 import axios from 'axios';
 import { random } from 'lodash';
-import {  thisMonth, thisWeek, today } from './mocks';
-import { Author, store} from './store';
+import { thisMonth, thisWeek, today, Post } from './mocks';
+import { Author, store } from './store';
 
 const delay = () => {
   return new Promise((resolve) => {
@@ -18,7 +18,13 @@ axios.post = async (url: string, payload: any) => {
   if (url === '/posts') {
     const id = random(100, 10000);
     await delay();
-    return Promise.resolve({ data: { ...payload, id } });
+    const post: Post = {
+      title: payload.title,
+      created: payload.created,
+      id: id.toString(),
+      authorId: payload.authorId,
+    };
+    return Promise.resolve<{ data: Post }>({ data: post });
   }
 
   if (url === '/users') {

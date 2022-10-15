@@ -1,14 +1,11 @@
-<template>
-  <h1>{{ post?.title || 'Post was not found' }}</h1>
-
-  <router-link :to="`/posts/${post?.id}/edit`" class="button is-link is-rounded">Edit post</router-link>
-</template>
+<template>Editing post {{ post.title }}</template>
 
 <script setup lang="ts">
 import { useStore } from '@/store';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const store = useStore();
 
 if (!store.getState().posts.loaded) {
@@ -17,6 +14,12 @@ if (!store.getState().posts.loaded) {
 
 const postId = route.params.id as string;
 const post = store.getState().posts.all.get(postId);
+
+if (!post) throw Error('Post is not found');
+
+if (post.authorId !== store.getState().authors.currentUserId) {
+  router.push('/');
+}
 console.log(post);
 </script>
 

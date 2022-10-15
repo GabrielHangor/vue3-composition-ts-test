@@ -9,14 +9,21 @@ import moment from 'moment';
 import { useRouter } from 'vue-router';
 import PostWriter from './PostWriter.vue';
 
+const store = useStore();
+const router = useRouter();
+
+const authorId = store.getState().authors.currentUserId;
+
+if (!authorId) {
+  throw Error('Current user ID was not found');
+}
+
 const newPost: Post = {
   id: '-1',
   title: 'New Post',
   created: moment().subtract(1, 'second'),
+  authorId,
 };
-
-const store = useStore();
-const router = useRouter();
 
 const savePost = async (newPost: Post) => {
   await store.createPost(newPost);
